@@ -1,12 +1,17 @@
 const express = require('express')
 const mountRoutes = require('./routes/index')
+const config = require('./utils/config')
+const mongoose =  require('mongoose')
+
+const uri = `mongodb+srv://${config.dbUser}:${config.DB_PW}@plmat.q0glb.mongodb.net/${config.DB_NAME}?retryWrites=true&w=majority`;
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+const db = mongoose.connection
+db.on('error', console.error.bind(console, 'Connection Error'))
+db.once('open', function() {
+  console.log('Connected to database')
+})
 
 const app = express()
-
-// will add a util here that verifies if request contains
-// access token given from this express server 
-// needs to included with every request to this api
-
 app.use(express.json())
 mountRoutes(app)
 
