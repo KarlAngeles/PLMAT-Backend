@@ -1,7 +1,7 @@
 const express = require('express')
-const mountRoutes = require('./routes/index')
 const config = require('./utils/config')
 const mongoose =  require('mongoose')
+const cors = require('cors')
 
 const uri = `mongodb+srv://dbUser:${config.DB_PW}@plmat.q0glb.mongodb.net/${config.DB_NAME}?retryWrites=true&w=majority`;
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -14,6 +14,8 @@ db.once('open', function() {
 
 const app = express()
 app.use(express.json())
-mountRoutes(app)
+app.use(cors())
+app.use('/api/plmat', require('./routes/plmat/index'))
+app.use('/api/admin', require('./routes/admin/index'))
 
 module.exports = app
